@@ -42,7 +42,57 @@ https://plfa.github.io/
 A Listing with these links and more
 https://avigad.github.io/formal_methods_in_education/
 
+
+
+------
+
+It would be super cool to actually run this on an FPGA. The open source FPGA world is blowing up
+
+Seems like a good tutorial getting started with open source FPGA
+https://medium.com/@luke_73359/getting-started-with-icestorm-verilog-on-the-ice40hx1k-fpga-cbc71ad3947d
+https://mcmayer.net/first-steps-with-the-icestorm-toolchain/
+
+Good beginner fpga project explanations
+https://www.fpga4fun.com/
+
 Some interesting blog posts on verifying Verilog using open source tools
 https://zipcpu.com/
+
+Many freely available cores
+https://opencores.org/
+
+Icestorm - The project that started the open source FPGA revolution
+http://www.clifford.at/icestorm/
+
+ECP5 FPGAs - A Work in progress, but I think it is getting there. By far the most powerful FPGA with open source tooling
+https://github.com/SymbiFlow/prjtrellis
+
+Open Source FPGA Twitter - Good place to hear news
+https://twitter.com/ico_tc?lang=en
+
+My Garbo:
+http://www.philipzucker.com/nand2tetris-in-verilog-and-fpga-and-coq/
+http://www.philipzucker.com/simple-fpga-stuff/
+
+Some Boards:
+
+Icestick
+https://www.latticesemi.com/icestick
+
+Icebreaker
+https://www.crowdsupply.com/1bitsquared/icebreaker-fpga
+http://icebreaker-fpga.com/
+
+TinyFPGA
+https://tinyfpga.com/
+
+
+
+
+
+
+
+
+
 
 
