@@ -23,6 +23,7 @@ https://softwarefoundations.cis.upenn.edu/
 Adam Chlipala's Textbooks
 http://adam.chlipala.net/cpdt/
 http://adam.chlipala.net/frap/
+http://plv.csail.mit.edu/kami/
 
 Proof General - A Standard Proof Assistant mode for Emacs
 https://proofgeneral.github.io/

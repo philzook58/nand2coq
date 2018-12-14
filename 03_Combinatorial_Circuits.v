@@ -67,10 +67,18 @@ Alternative - Give pins names. Yikes.
 
 
 Prove that (eval or) (x,y) == coq_or (x,y) 
+and all other proofs
 
+
+-- There ought to be a very simple LTAC for these. also auto will probably work
+-- still, good exercises
+-- They are all provable by brute force / truth table
 
 
 Verilog code gen?
+One difficulty would be fresh name generation I think. And that isn't so bad.
+If we want higher level verilog output (using word level operators and switch statements and stuff), Have a couple of DSLs. use asserts in the verilog to make sure they are equivalent.
+(i.e. that our code gen works.) 
 
 
 *)
