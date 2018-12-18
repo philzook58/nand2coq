@@ -37,8 +37,16 @@ https://coq.inria.fr/library/
 Mathematical Components Book. A book on using Coq with the Mathemtical Components library
 https://math-comp.github.io/mcb/
 
+Another Text
+http://ilyasergey.net/pnp/
+
+Awesome Coq List
+https://github.com/uhub/awesome-coq
+
 Programming Language Foundations - An Agda Textbook
 https://plfa.github.io/
+
+
 
 A Listing with these links and more
 https://avigad.github.io/formal_methods_in_education/
