@@ -12,6 +12,22 @@ Build data structure for circuits.
 
 What I'm thinking roughly in Haskell:
 -- Too painful point free style?
+-- BitVectors would be a convenient. A derived notion? Association of tuples is largely irrelevant
+-- Generic Data Types. Anything that is a product type is acceptable.
+-- (f Bool)? 
+-- Records would also be convenient. Stuff like {ram :: Circuit (BV 32) (BV 32), alu ::  }. No this is fine. This is at the Meta Level.
+-- Perhaps if we give an isomorphism to Tuple Bools.
+
+
+type family BitVector where
+   BitVector 0 = ()
+   BitVector n = (Bool, BitVector n - 1)
+-- if we are only working with powers of 2, it is often easier to use
+type family TupleTree where
+   TupleTree 0 = Bool
+   TupleTree n = (TupleTree n - 1, TupleTree n - 1)
+
+-- HOAS as alternative? Circuits do not have higher order functions. Does that not present a problem?
 
 data Circuit a b where
    Nand :: Circuit (Bool,Bool) Bool 
@@ -23,15 +39,35 @@ data Circuit a b where
    Fst :: Circuit (a,b) a
    Snd :: Circuit (a,b) b
 
+-- Drop :: Circuit a () -- Not sure we really want this / it isn't mostly derivable. Fst and Snd let us destroy things. down to 1 element
+-- CTrue :: Circuit () Bool -- This may also be derivable . nand (not x) x = true. tautology :: Circuit Bool Bool
+-- CFalse :: Circuit () Bool -- This is deriviable from CTrue. not true = false
+
 -- instance Category Circuit
+
+-- Circuits are boolean functions
+-- Any functions (->) are Meta language functions. They are circuit Macros, if you like. 
 
 
 nand = Nand
 not = Comp Nand Dup
+or :: Circuit (Bool, Bool) Bool
 or = Comp not (Comp Nand (Par not not))
+-- partially applied or can be nice for cleaning up syntax
+or' :: Circuit a Bool -> Circuit a Bool -> Circuit a Bool
+or' f g = Comp or (Par f g)
+or'' :: Circuit a (Bool, Bool) -> Circuit a Bool
+or'' f = Comp or f 
+tautology = Comp Nand (Comp (Par not Id) Dup)
 
 double :: Circuit a b -> Circuit (a,a) (b,b)
 double f = Par f f
+
+
+fan f g = Comp (Par f g) Dup
+first f = Par f Id
+second g = Par Id g
+
 
 -- parallel on entire block
 or2 = double or
