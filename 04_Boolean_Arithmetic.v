@@ -1,4 +1,36 @@
+(* Bvector is a standard library data type. It is a sized vector of bools, least significant bit first
+https://coq.inria.fr/library/Coq.Bool.Bvector.html
 
+
+https://coq.inria.fr/library/Coq.ZArith.BinIntDef.html
+
+
+*)
+Require Import Bvector.
+Require Import ZArith.
+Local Open Scope Z_scope.
+Compute Bnil.
+Compute Bcons true 0 Bnil.
+
+Compute 203%Z.
+Compute 203%Z + 20%Z.
+Compute 2 + 4.
+Compute -4.
+
+
+Definition Z_to_bv  (x : Z) (n : nat) : Bvector n :=
+match x with 
+| Z0 => bv0
+| Zpos y => (positive_to_bv y n)
+| Zneg y => negb (positive_to_bv y n)
+end.
+
+Definition Z_to_bv  (x : Z) (n : nat) : Bvector n := 
+
+Definition bv_to_Z  (v : Bvector _) : Z := 
+
+Thereom from_to_bv
+Thereom to_from_bv
 (*
 
 

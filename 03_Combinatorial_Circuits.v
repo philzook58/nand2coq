@@ -53,7 +53,9 @@ Inductive circuit : Type -> Type -> Type :=
 |  Dup {A : Type} : circuit A (A * A)
 |  Par {A B C D : Type} : circuit A B -> circuit C D ->  circuit (A * C) (B * D)
 |  Id {A : Type} : circuit A A
-|  Comp {A B C: Type} : circuit B C -> circuit A B -> circuit A C.
+|  Comp {A B C: Type} : circuit B C -> circuit A B -> circuit A C
+|  Fst {A B : Type} : circuit (A * B) A 
+|  Snd {A B : Type} : circuit (A * B) B.
 
 (*
 | Collect : circuit a b -> circuit BVector
@@ -62,6 +64,9 @@ Inductive circuit : Type -> Type -> Type :=
 | IsoForward : circuit a b -> Iso b b' -> circuit a b'
 | IsoBackward : circuit a b -> iso a a' -> circuit a' b
 
+| IsoCirc : Iso a a' -> circuit a a'
+Theh compose to get forward and backward 
+Can totally ignore upon interpetation.
 Demonstrainte isomrohpism between bitvectors and tuples of bools
 But swaps are isos too. No I don't like it.
 
@@ -81,9 +86,10 @@ Definition fan {A B C: Type} (f : A -> B) (g : A -> C) (x : A) : (B * C) :=
 
 Definition nandb := fun x y => negb (andb x y).
 
-(* This is also in the standard library under Program *)
+Require Import Program.
+(* This is also in the standard library under Program
 Definition compose {A B C: Type} (f : B -> C) (g : A -> B) : A -> C := fun x => f (g x). 
-
+*)
 About prod_curry.
 About andb.
 Check prod_curry andb.
@@ -96,18 +102,61 @@ match circ with
 | Par f g => par (ceval f) (ceval g)
 | Id => fun x => x
 | Comp f g => compose (ceval f) (ceval g)
+| Fst => fst
+| Snd => snd
 end.
 
+
+(* I need to learn how to automate this all more. 
+They can all go through by truth table, but one would hope for more elegance.
+Starts to be unacceptable at 16 bit?
+
+destr_bool from Bool is an Ltac for this
+
+The Bool standard library (which is not imported by default) is definitely worth a look. 
+ https://coq.inria.fr/library/Coq.Bool.Bool.html
+*)
+
+Require Import Bool.
+
+Hint Resolve negb_involutive.
+Theorem emulate {A B C : Type} : forall x : A, forall f : circuit B C, forall g : circuit A B, ceval (Comp f g) x = (ceval f) ((ceval g) x).
+Proof. auto. Qed.
+Hint Resolve emulate.
 
 
 Definition nandc := Nand.
 
+
 Theorem nandb_equiv : forall (b1 b2 : bool), ceval nandc (pair b1 b2) = nandb b1 b2.
 Proof. auto.  Qed.
+
+Hint Resolve nandb_equiv.
 (* one can build not from a nand by tying the inputs together *)
+
+Search (andb ?m ?m).
+Hint Rewrite andb_diag.
+Print andb_diag.
+
 Definition negc := Comp Nand Dup.
-Theorem negb_equiv : forall (b : bool), ceval negc b = negb b.
-Proof. intros b. destruct b. reflexivity. reflexivity. Qed.
+Theorem negc_equiv : forall (b : bool), ceval negc b = negb b.
+Proof. destr_bool. Qed. 
+   (* intros b. destruct b; reflexivity. Qed. *)
+
+Hint Rewrite negc_equiv.
+
+Search (negb (negb _)).
+
+Theorem dup_test: forall b : bool, dup b = (b , b).
+Proof. auto.
+
+
+Definition andc := Comp negc Nand.
+Theorem andc_equiv : forall (b1 b2 : bool), ceval andc (pair b1 b2) = andb b1 b2.
+Proof. intros b1 b2. unfold andc. rewrite emulate. rewrite negc_equiv. rewrite nandb_equiv. unfold nandb. rewrite negb_involutive. trivial. Qed.
+
+
+
 
 (* We can define or using De Morgan's law *)
 Definition orc := Comp nandc (Par negc negc).
@@ -118,11 +167,25 @@ Definition norc := Comp negc orc.
 (* We can build a function that always evalautes to true by nanding two opposites *)
 Definition truec := Comp Nand (Comp (Par negc Id) Dup).
 Theorem truec_equiv : forall (b : bool), ceval truec b = true.
-Proof. auto. Qed.
-
+Proof. destr_bool. Qed.
 
 Definition widen {a b : Type} (c : circuit a b) : circuit (a * a) (b * b) := Par c c.
 
+
+Definition muxc : circuit ((bool * bool) * bool) bool := 
+  Comp orc (Comp (widen andc) (Comp (Par (Par Fst Id) (Par Snd negc)) Dup)).
+
+Theorem muxc_equiv : forall (s a b : bool), ceval muxc (pair (pair a b) s) = if s then a else b.
+Proof. intros s a b. destruct s; destruct a; destruct b; reflexivity.  Qed.
+
+
+
+
+(*
+Proving catgeorical equivalences
+ceval (Comp Fst Dup) = ceval Id 
+etc
+*)
 
 (*
 

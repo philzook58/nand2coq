@@ -26,9 +26,35 @@ It's important to learn the techniques and tactics for proofs,
 *)
 
 
+(* The Theorems aren't really a seperate part of the language from the programs. It is very interesting. 
+What makes the vernacular keywords Theorem and Proof special is how they put coq into proof mode where you can use tactics to write programs
+
+The word "exact" is a tactic that takes a Gallina expression that fulfils the type signature
+*)
 
 Theorem double : nat -> nat.
 Proof. exact (fun x => 2 * x). Qed.
+
+Compute double 3. (* This didn't work *)
+
+(* It is certainly a stretch to call double a theorem, but we'll see things later that really are more thoerem like. In this case, what we've proven is that it is possible to construct a function with the type nat -> nat. This is not at all unique *)
+
+Theorem weird_double : nat -> nat.
+Proof. exact (fun x => 340). Qed.
+
+(* You can also write terms with holes. In languages like Agda and Idris, this is the main way programming and proofs are done, but it seems to be rather unidiomatic coq.
+
+The refine tactic lets you have holes in your expression. Each hole becomes a goal in the proof state that you're going to need to supply later.
+*)
+
+Theorem double' : nat -> nat.
+Proof. refine (fun x => _). exact (2 * x). Qed.
+
+(* There is a different tactic that introduces variables call intros. This is more idiomatic *)
+
+Theorem double'' : nat -> nat.
+Proof. intros x. exact (2 * x). Qed.
+
 
 Theorem idtheorem: forall (A: Type), A -> A.
 Proof. intros. exact X. Qed.
@@ -43,17 +69,32 @@ Proof. exact (fun (A:Type) (x:A) => x). Qed.
   For example, depending of whether zero is being added from the left or right is different.
   *)
 
-(* Equality is a propsition with a single constructor eq_refl
+(* Equality is a propsition with a single constructor eq_refl. I recall finding this very puzzling, and I'm sure I still would if I was probed about it or contemplated hard. Equality is a fundamental, but subtle thing. I find that a rough picture of how typechecking works helps me to understand what is going on. 
+
+x = y is a Prop, which is similar to a type
+There may be a way to construct a value of this type or not (depending whether you can actually prove the equality or not).
+
+
 *)
 Theorem eq_3: 3 = 3.
 Proof. exact eq_refl. Qed. 
 
-Definition eq_3' : 3 = 3 := eq_refl.
+Theorem eq_3': 3 = 3.
+Proof. reflexivity. Qed. 
+
+Definition eq_3'' : 3 = 3 := eq_refl.
+
+Theorem andb1 : andb true true = true.
+Proof. exact eq_refl. Qed.
+
+Theorem andb1' : andb true true = true.
+Proof. reflexivity. Qed.
+
 
 (*  Reflexivity is a tactic that deals with equality. It also does some simplification and works for equality other than eq *)
 
 Theorem nat_eq: forall (n:nat), n = n.
-Proof. intros n.
+Proof. intros n. reflexivity. Qed.
 
 Theorem zero_id: forall n, 0 + n = n.
 Proof. intros n. reflexivity. Qed.
@@ -63,18 +104,40 @@ Proof. intros n. reflexivity. Qed.
 Theorem zero_id': forall n, n + 0 = n.
 Proof. intros n. induction n. reflexivity. simpl. rewrite IHn. reflexivity. Qed.
 
+Theorem zero_id'': forall n, n + 0 = n.
+Proof. auto. Qed.
+
+(* We can actually see the proof derived using Print *)
+Print zero_id''.
+
+(* the theorem eq_sym and plus_n_0 were used. These we in the hint data base *)
+
+(*
+
+auto can also take a search depth parameter
+
+*)
+
 Search nat.
 Theorem double_plus_ungood: forall n, 2 * n = n + n.
-Proof.  intros. induction n. simpl. reflexivity. Admitted. 
+Proof. intros. simpl. rewrite zero_id'. reflexivity. Qed. 
 
+Theorem double_plus_ungood': forall n, 2 * n = n + n.
+Proof. auto. Qed.
 
+Print double_plus_ungood'.
 
-Theorem andb1 : andb true true = true.
-Proof. reflexivity. Qed.
+Theorem plus_comm: forall n m,  m + n = n + m.
+Proof. auto. intros n m. induction m. auto. simpl. rewrite IHm. auto. Qed. 
+
+SearchRewrite (_ + S _).
+
 
 Search True.
 
+
 (* True is a Prop with a single contstructor I. It is similar to unit. *)
+
 Goal True. 
 Proof. apply I. Qed.
 
@@ -89,13 +152,49 @@ Proof. intros A B HA HB. split. apply HA. apply HB.  Qed.
 Search unit.
 
 
+(* existentails
 
-Theorem exists_3 : exists (n : nat), n = 3. 
+eauto - is auto plus a little more. 
+*)
+
+Theorem exists_3 : exists (n : nat), n = 3.
 Proof. exists 3. reflexivity. Qed.
 
+Theorem exists_3' : exists (n : nat), n = 3. 
+Proof. eauto. Qed. 
 
 
-  (*  Tacticals are higher order tactics. They allow chaining of tactics *))
+
+
+
+  (*  Tacticals are higher order tactics. They allow chaining of tactics. 
+  
+  ; sequences tactics. Each subsequent tactic is applied to the goal tree in parallel
+
+  try - tries a tactic, which may fail
+
+  repeat - does the tactic until it stops applying
+
+
+
+  + is backtracking it will try the left branch and then go downward until a tactic fails to apply. Then it will back track to this point
+
+  || tries the left tactic and if it doesn't work in all the goals, it will just use the right tactic
+  *)
+
+
+
+  (*
+     LTAC is the Coq tactic scripting language
+
+     idtac
+     fail
+     fresh
+
+
+
+
+  *)
 (*
 
 Raw Dog without tactics 
@@ -122,6 +221,7 @@ https://stackoverflow.com/questions/32682544/is-there-a-minimal-complete-set-of-
 
 https://pjreddie.com/coq-tactics/
 http://adam.chlipala.net/itp/tactic-reference.html
+https://www.cs.cornell.edu/courses/cs3110/2018sp/a5/coq-tactics-cheatsheet.html
 
 
 
@@ -131,6 +231,9 @@ Automation
 auto - automatic proof search
 ring - solves polynomials / numbers stuff.
 omega - automatic solves simple problems for integers
+
+
+The tactic auto is able to solve a goal that can be proved using a sequence of intros, apply, assumption, and reflexivity
 
 
 

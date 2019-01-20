@@ -3,20 +3,22 @@
 (* valid destination types. Is there a better way to factr this?
 All combinations of registers are possible.
 *)
+Require Import Bvector.
+
 Inductive dest : Type :=
 | iNull | iM | iD | iMD | iA | iAM | iAD | iAMD.
 
 Inductive reg : Type :=
-| rA | rM | rD
+| rA | rM | rD.
 
 Inductive MA : Type :=
-| M | A
+| M | A.
 (* M register is the location of RAM[A] *)
 (* A is an addressing register *)
 (* D is an actual register *)
 
 Inductive consts : Type :=
-| zero | one | negone
+| zero | one | negone.
 
 Inductive comp : Type :=
 | cconst : consts -> comp (* fill with constant *)
@@ -39,12 +41,14 @@ Inductive jump : Type :=
 
 
 Inductive instr : Type := 
-| At : bits 15 -> instr
+| At : Bvector 15 -> instr
 | Comp : dest -> comp -> jump -> instr.
 
 
 
-Definition word := bits 16.
+
+Definition word := Bvector 16.
+Record state
 Definition state := {rA : word, rD : word , ram : map addressspace word}
 
 Definition aeval (instate : state) (instr : instr) : state := 
