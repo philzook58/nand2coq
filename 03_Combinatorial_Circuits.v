@@ -25,6 +25,42 @@ data Circuit a b where
 
 -- instance Category Circuit
 
+*)
+
+Inductive circuit : Type -> Type -> Type :=
+|  Nand : circuit (bool * bool) bool
+|  Dup {A : Type} : circuit A (A * A)
+|  Par {A B C D : Type} : circuit A B -> circuit C D ->  circuit (A * C) (B * D)
+|  Id {A : Type} : circuit A A.
+
+
+
+Definition par {A B C D : Type} (f : A -> B) (g : C -> D) (x : A * C) : (B * D) :=
+match x with (pair a b) => pair (f a) (g b) end.
+
+Definition dup {A : Type} (x : A) : (A * A) :=
+pair x x.
+
+Definition fan {A B C: Type} (f : A -> B) (g : A -> C) (x : A) : (B * C) :=
+(par f g) (dup x).
+
+Definition nand := fun x y => negb (andb x y).
+
+About prod_curry.
+About andb.
+Check prod_curry andb.
+About id.
+Compute id 3.
+Fixpoint ceval {a b : Type} (circ : circuit a b) : a -> b :=
+match circ with
+| Nand => (prod_curry andb)
+| Dup => dup
+| Par f g => par (ceval f) (ceval g)
+| Id => fun x => x
+end.
+
+
+(*
 
 nand = Nand
 not = Comp Nand Dup

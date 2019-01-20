@@ -13,7 +13,88 @@ Void = False
 Intuitionistic. No double negation
 
 
+Even more vitally than for programming, you need interactive help from the ocmpiler for theorem proving.
 
+
+
+*)
+
+(*
+It's important to learn the techniques and tactics for proofs,
+ But the ultimate goal is to make proofs as simple and automatic as possible. There are some automatic tactics.
+
+*)
+
+
+
+Theorem double : nat -> nat.
+Proof. exact (fun x => 2 * x). Qed.
+
+Theorem idtheorem: forall (A: Type), A -> A.
+Proof. intros. exact X. Qed.
+
+Theorem idtheorem': forall (A: Type), A -> A.
+Proof. exact (fun (A:Type) (x:A) => x). Qed.
+
+
+  (* What is refelxivity?  *)
+
+  (* The exact manner a function is defined vastly changes how similar seeming facts are proved
+  For example, depending of whether zero is being added from the left or right is different.
+  *)
+
+(* Equality is a propsition with a single constructor eq_refl
+*)
+Theorem eq_3: 3 = 3.
+Proof. exact eq_refl. Qed. 
+
+Definition eq_3' : 3 = 3 := eq_refl.
+
+(*  Reflexivity is a tactic that deals with equality. It also does some simplification and works for equality other than eq *)
+
+Theorem nat_eq: forall (n:nat), n = n.
+Proof. intros n.
+
+Theorem zero_id: forall n, 0 + n = n.
+Proof. intros n. reflexivity. Qed.
+
+(* Many proofs are by induction. *)
+
+Theorem zero_id': forall n, n + 0 = n.
+Proof. intros n. induction n. reflexivity. simpl. rewrite IHn. reflexivity. Qed.
+
+Search nat.
+Theorem double_plus_ungood: forall n, 2 * n = n + n.
+Proof.  intros. induction n. simpl. reflexivity. Admitted. 
+
+
+
+Theorem andb1 : andb true true = true.
+Proof. reflexivity. Qed.
+
+Search True.
+
+(* True is a Prop with a single contstructor I. It is similar to unit. *)
+Goal True. 
+Proof. apply I. Qed.
+
+Goal forall {A B : Prop}, A /\ B -> A.
+Proof. exact proj1. Qed.
+
+
+Goal forall {A B : Prop}, A -> B -> A /\ B.
+Proof. intros A B HA HB. split. apply HA. apply HB.  Qed.
+
+  (*  tt : unit *) 
+Search unit.
+
+
+
+Theorem exists_3 : exists (n : nat), n = 3. 
+Proof. exists 3. reflexivity. Qed.
+
+
+(*
 
 Raw Dog without tactics 
 
@@ -74,6 +155,35 @@ try
 
 
 *)
+
+
+(*
+Induction principles made by data type definitions.
+
+*)
+
+
+(* Case matching on impossible things *)
+(* Proving anything from False *)
+(*   *)
+
+(* https://stackoverflow.com/questions/40695030/how-to-prove-the-arithmetic-equality-3-s-i-j-1-s-3-i-1-s-3
+*)
+
+(* Goal vecrnacular. don't have to give it a name*)
+Require Import Arith.
+Theorem doub (a : nat) : 2 * a = a + a. 
+  ring. Qed.
+
+Require Import Omega.
+Theorem doub2 (a : nat) : 2 * a = a + a. 
+  omega. Qed.
+
+
+Theorem simp : exists e, e + 1 = 2.
+Proof.
+ exists 1. simpl. reflexivity. Qed.
+
 
 About prod.
 
