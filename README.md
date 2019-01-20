@@ -25,6 +25,9 @@ http://adam.chlipala.net/cpdt/
 http://adam.chlipala.net/frap/
 http://plv.csail.mit.edu/kami/
 
+Chlipala & Braibant - Featherweight Synthesis
+http://braibant.github.io/update/2014/07/31/fe-si.html
+
 Proof General - A Standard Proof Assistant mode for Emacs
 https://proofgeneral.github.io/
 
