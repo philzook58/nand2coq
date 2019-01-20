@@ -52,9 +52,23 @@ Inductive circuit : Type -> Type -> Type :=
 |  Nand : circuit (bool * bool) bool
 |  Dup {A : Type} : circuit A (A * A)
 |  Par {A B C D : Type} : circuit A B -> circuit C D ->  circuit (A * C) (B * D)
-|  Id {A : Type} : circuit A A.
+|  Id {A : Type} : circuit A A
+|  Comp {A B C: Type} : circuit B C -> circuit A B -> circuit A C.
 
+(*
+| Collect : circuit a b -> circuit BVector
+| Uncollect 
 
+| IsoForward : circuit a b -> Iso b b' -> circuit a b'
+| IsoBackward : circuit a b -> iso a a' -> circuit a' b
+
+Demonstrainte isomrohpism between bitvectors and tuples of bools
+But swaps are isos too. No I don't like it.
+
+| nilCircuit : Circuit nil nil
+| consbool :: Circuit (BVect 2) (BVect 1)
+| ParVect : circuit a (v n1) -> circuit b (bvect n2) -> circuit bvect (n3 + n4) bvect (n1 +  n2)
+*)
 
 Definition par {A B C D : Type} (f : A -> B) (g : C -> D) (x : A * C) : (B * D) :=
 match x with (pair a b) => pair (f a) (g b) end.
@@ -65,7 +79,10 @@ pair x x.
 Definition fan {A B C: Type} (f : A -> B) (g : A -> C) (x : A) : (B * C) :=
 (par f g) (dup x).
 
-Definition nand := fun x y => negb (andb x y).
+Definition nandb := fun x y => negb (andb x y).
+
+(* This is also in the standard library under Program *)
+Definition compose {A B C: Type} (f : B -> C) (g : A -> B) : A -> C := fun x => f (g x). 
 
 About prod_curry.
 About andb.
@@ -74,11 +91,37 @@ About id.
 Compute id 3.
 Fixpoint ceval {a b : Type} (circ : circuit a b) : a -> b :=
 match circ with
-| Nand => (prod_curry andb)
+| Nand => (prod_curry nandb)
 | Dup => dup
 | Par f g => par (ceval f) (ceval g)
 | Id => fun x => x
+| Comp f g => compose (ceval f) (ceval g)
 end.
+
+
+
+Definition nandc := Nand.
+
+Theorem nandb_equiv : forall (b1 b2 : bool), ceval nandc (pair b1 b2) = nandb b1 b2.
+Proof. auto.  Qed.
+(* one can build not from a nand by tying the inputs together *)
+Definition negc := Comp Nand Dup.
+Theorem negb_equiv : forall (b : bool), ceval negc b = negb b.
+Proof. intros b. destruct b. reflexivity. reflexivity. Qed.
+
+(* We can define or using De Morgan's law *)
+Definition orc := Comp nandc (Par negc negc).
+Theorem orb_equiv : forall (b1 b2 : bool), ceval orc (pair b1 b2) = orb b1 b2.
+Proof. intros b1 b2. destruct b1; destruct b2; reflexivity.  Qed.
+
+Definition norc := Comp negc orc.
+(* We can build a function that always evalautes to true by nanding two opposites *)
+Definition truec := Comp Nand (Comp (Par negc Id) Dup).
+Theorem truec_equiv : forall (b : bool), ceval truec b = true.
+Proof. auto. Qed.
+
+
+Definition widen {a b : Type} (c : circuit a b) : circuit (a * a) (b * b) := Par c c.
 
 
 (*

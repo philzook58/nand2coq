@@ -94,6 +94,8 @@ Theorem exists_3 : exists (n : nat), n = 3.
 Proof. exists 3. reflexivity. Qed.
 
 
+
+  (*  Tacticals are higher order tactics. They allow chaining of tactics *))
 (*
 
 Raw Dog without tactics 
