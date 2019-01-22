@@ -119,6 +119,47 @@ The Bool standard library (which is not imported by default) is definitely worth
 
 Require Import Bool.
 
+Definition assoc {a b c : Type} : circuit ((a * b) * c) (a * (b * c)) := 
+Comp (Par (Comp Fst Fst) (Par Snd Id)) Dup.
+
+Definition assoc' {a b c : Type} : circuit (a * (b * c)) ((a * b) * c) := 
+Comp (Par (Par Id Fst) (Comp Snd Snd)) Dup.
+
+Fixpoint Bvector' (n : nat) : Type := 
+match n with
+| S n' => bool * (Bvector' n')
+| Z => bool
+end.
+
+Fixpoint Btree (n : nat) : Type := 
+match n with
+| S n' => (Btree n') * (Btree n')
+| Z => bool
+end.
+Compute Nat.shiftl 1 3.
+Compute Nat.pow 2 3.
+
+Fixpoint pow2 (n : nat) : nat :=
+match n with
+| S n' => Nat.double (pow2 n')
+| Z => 1
+end.
+
+
+(*
+The BTree BVector isomorphism is a bit tricky
+
+Fixpoint rightassoc {n : nat} (x : Btree n) : Bvector' (pow2 n) :=
+match n with
+| S n' => match x with
+          pair a b => 
+| Z => x
+       
+end.
+*)
+
+
+
 Hint Resolve negb_involutive.
 Theorem emulate {A B C : Type} : forall x : A, forall f : circuit B C, forall g : circuit A B, ceval (Comp f g) x = (ceval f) ((ceval g) x).
 Proof. auto. Qed.
