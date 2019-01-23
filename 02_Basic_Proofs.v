@@ -16,6 +16,18 @@ Intuitionistic. No double negation
 Even more vitally than for programming, you need interactive help from the ocmpiler for theorem proving.
 
 
+Proof is actually a no-op.
+
+You can use tactics for defining regular functions
+https://stackoverflow.com/questions/41837820/agda-like-programming-in-coq-proof-general
+Just need to use a period after the type declaration rather than :=
+Theorem ~ Fixpoint
+
+Definition three : nat.
+exact 3. Defined.
+
+Program automates parts of refinement typing.
+
 
 *)
 

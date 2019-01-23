@@ -11,8 +11,20 @@ https://wiki.haskell.org/Circular_programming
 Add a DFF primitive that adds a 
 DFF :: Circuit () (Bool, Promise Bool)
 Cap :: Circuit (Promise Bool, Bool) () -- Eval
-Mu :: Circuit ((), a) a -- Monoidal destroyers. did i get the names right? eta?
+
+
+Mu :: Circuit ((), a) a -- Monoidal destroyers. did i get the names right? eta? These are not related to the delayed nature. We just didn't need them before
 Nu :: Circuit a ((), a)
+
+-- Avoid (). DFFwithEnable : DFF Bool (Bool, Promise Bool)
+-- Cap :: (Bool, Promise Bool)
+
+
+-- not quite right. Anyway. You can make a clock by feeding back neagtive of DFF to itself.
+clock = Comp Cap (not' DFF)
+
+counter -- something like Comp Cap add 1 dff16
+
 
 The data flow arrows have directionality. data flows out of input bools into output bools
 data flows into input Pormise bools and out of output Promise bools
@@ -28,8 +40,9 @@ flup Par =
 flup Dup = 
 flup ...
 
-data Promise a -- Promise a  ~  a -> ()
-
+data Promise a -- Promise a  ~  a -> () -- Maybe even want to use this type. Makes Cap (Bool -> (), Bool) () pretty intuitive.
+type Next a -- Next might be an alternative name
+type X a -- X is modal notation from LTL. Might also be relevant 
 
 State Machines
 

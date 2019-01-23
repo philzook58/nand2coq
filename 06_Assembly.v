@@ -45,6 +45,12 @@ Inductive instr : Type :=
 | Comp : dest -> comp -> jump -> instr.
 
 
+(* start with unbounded ram 
+map using association list or 
+map using function? https://softwarefoundations.cis.upenn.edu/lf-current/Maps.html
+
+*)
+Definition ram := nat -> word
 
 
 Definition word := Bvector 16.
@@ -56,3 +62,31 @@ match instr with
 | At addr =>  instate (* setA state addr *)
 | Comp d c j => instate (* fill out the long implentation *)
 end. 
+
+(* 
+
+Questions:
+Program counter?
+Guaranteeing out of bounds memory?
+
+ *)
+
+
+(* Opcode translation
+
+Definition opcode (i : instr) : word :=
+match i with
+| At x => ? Bcons true _ x
+| Comp d c j => ? Bcons false _ (opcodeDest d ++  opcodeComp c ++ opCodeComp j )
+end.
+
+
+Definition opcodeDest (d : dest) : Bvector ? :=
+
+Definition opcodeComp (c : comp) : Bvector ? :=
+Definition opcodeJump (j : ) : Bvector ? :=
+ *)
+
+
+
+(* Program Counter?  *)

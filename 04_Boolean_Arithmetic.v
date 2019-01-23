@@ -30,6 +30,102 @@ Definition wone : word := Bcons true _ (Bvect_false 15).
 Compute true && false.
 Compute true || false.
 
+Theorem bvadd' (n : nat) (x y : Bvector n)  (carry : bool) : Bvector n.
+Proof. intros. induction n. exact Bnil. inversion x. inversion y.
+       refine (Bcons (xorb (xorb h h0) carry) n _). exact (IHn H0 H2). Qed.
+
+Print bvadd'.
+
+About f_equal.
+About eq_ind.
+About eq_rec_r.
+
+Inductive eq (A:Type) (x:A) : A -> Prop :=
+  eq_refl : eq A x x.
+
+About eq.
+About eq_rect.
+About eq_rec.
+About eq_ind.
+Search False.
+
+About nat_ind.
+About nat_rec.
+
+Print nat_ind.
+Definition simpsum : nat -> nat := nat_rec (fun _ => nat) 0 (fun n acc => acc + n).
+Compute simpsum 4.
+
+Definition simple_id {n : nat} (x : Bvector n) (y : Bvector n): Bvector n :=
+  match x with
+  | Vector.cons _ a n' xs => Bcons a n' xs
+  | Vector.nil _ => Bnil
+                 end.
+
+Fixpoint bvadd {n : nat} (x : Bvector n) : Bvector n -> bool -> Bvector n :=
+  match x with
+  | Vector.nil _ => fun y carry => match y in (Vector.t _ n') return (match n' with
+                                                                  | S _ => unit
+                                                                  | Z => Bvector Z
+                                                              
+                                                                end) with
+                               | Vector.nil _ => Bnil
+                               | Vector.cons _ _ _ _ => tt
+                             end
+  | Vector.cons _ a n' xs => fun y carry => match y in (Vector.t _ n'') return (match n'' with
+                                                                          | S pn => (Bvector pn -> bool -> Bvector pn) -> Bvector n''
+                                                                          | Z => unit
+                                                                          end) with
+                                      | Vector.nil _ => tt
+                                      | Vector.cons _ b n''' ys => fun bvxs => Bcons (xorb carry (xorb a b)) n''' (bvxs ys ((a && b) || (b && carry) || (carry && a)) )  
+                                      end (bvadd xs)
+  end.
+Compute [true ; false ; true].
+Compute bvadd [false ; true] [true ; false] false.
+
+Definition myadd (x : nat ): nat -> nat.
+  refine (fun y => _).
+  exact (x + y).
+  Defined.
+
+Compute bvadd (Bcons true _ Bnil) (Bcons Bcons false _ Bnil).
+
+Print refine.
+bvadd 
+
+  (*
+
+https://coq.inria.fr/refman/addendum/program.html
+Look at the passing of equalities
+https://stackoverflow.com/questions/31041297/coq-convoy-pattern
+Coq convoy apttern
+https://stackoverflow.com/questions/41837820/agda-like-programming-in-coq-proof-general
+
+*)
+
+Definition bvadd' := rect2 (fun n _ _ => Bvector n) (Bnil)
+                           (fun n v1 v2 res => fun carry =>   )
+
+Definition simple_id' {n : nat} (x : Bvector n) (y : Bvector n): Bvector n :=
+  match x as e in (Vector.t _ s) return Bvector s with
+  | Vector.cons _ a n' xs => x
+  | Vector.nil _ => Bnil
+ end.
+
+
+(* so I could include the equality*)
+Fixpoint bvadd' {n : nat} (carry : bool) (x y : Bvector n) : Bvector n :=
+  match n with
+  | S n' => fun (x0 : Bvector (S n')) => @Vector.caseS bool (fun _ _ => Bvector n') (fun a n'' xs => Bcons a n' xs) n' x0
+  | Z => fun _ => Bnil
+  end x.
+
+match x in (Vector.t _ n) return Bvector n with
+| Vector.cons _ a n' xs => @Vector.caseS bool (fun n'' v => Bvector n') (fun b _ ys => cons (xorb (xorb a b) carry) (bvadd' ((a && b) || (b && carry) || (carry && a)) xs ys)) y
+                 
+| Vector.nil _ => Bnil
+end.
+
 
 (* This is sucking. Use rect2? Use a fold?
 Use list, not vector?

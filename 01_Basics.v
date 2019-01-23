@@ -74,7 +74,7 @@ Search bool.
 (* 
 Coq has a special mechanism to support notations. One that is useful and not on by default is list notation
 
-
+Locate vernacular can be helpful.
 Require loads a library whereas Import brings its definitions into scope. Require Import does both.
 
 Starting Notations
