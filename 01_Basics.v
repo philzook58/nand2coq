@@ -26,14 +26,29 @@ VSCoq is Ctrl+Alt+ArrowKeys, (Ctrl + Command + ArrowKeys on Mac)
 
 By default Coq imports a prelude. 
 
-You can find a list of default built in data types here https://coq.inria.fr/library/Coq.Init.Datatypes.html
 
-This includes the following familiar friends:
+A decent basic overview of what is in the standard library and what is imported by default
+
+https://coq.inria.fr/refman/language/coq-library.html
+
+You can find a list of default built in data types here
+ https://coq.inria.fr/library/Coq.Init.Datatypes.html
+
+This includes the following (hopefully) familiar friends:
 bool, list, option, sum, prod, nat, unit, Empty_set, comparison, identity
 
-The interactive mode of coq has many commands. These start with capital latters and are called Vernacular commands. The temrinology Vernacular is why coq files are called .v files.
+In Haskell these would be
+Bool, [], Maybe, Either, Tuple, ? I don't think the standard library has a Nat , (), Void, Ordering, 
 
-About and Print will tell us information about something.
+There are also some default functions available for these data types. More functions are available upon extra importing
+
+The interactive mode of coq has many commands. These start with capital latters and are called Vernacular commands. The terminology Vernacular is why coq files are called .v files.
+
+About and Print will tell us information about something. Print tends to show the actual definitions.
+You can also ask about operators by putting them in quotes
+
+Locate 
+
 
 *)
 
@@ -41,11 +56,8 @@ About bool.
 About prod.
 About list.
 
-(*
 
-There are also some functions available for these data types. More functions are available upon extra importing
-
-*)
+(* You can compute values by calling Compute or by Eval compute, which is slightly different. Eval has more options   *)
 
 
 Compute andb true false. (* You can run code by using the Compute vernacular. *)
@@ -58,6 +70,7 @@ Compute app (cons 1 nil) (cons 2 (cons 3 nil)). (* app is the list append functi
 Print app. (* Print can give you a more complete infromation. For example the code implementing the function *)
 
 
+(* You can ask for the type of something by Check *)
 
 (* What is the nat equality operator? I don't know. But I do know what there type signature is, so I can use the Search vernacular to find functions in the context. Search is very powerful and useful *)
 
@@ -67,15 +80,33 @@ Compute Nat.div 6 5. (* rounds down *)
 
 (* We can also search for anything that involves list *)
 Search list.
-
-(* You can get a listing of all entries that involve bool*)
 Search bool.
+Search bool -> bool -> _.
+Search ?m = ?m.
+Search (list ?m -> list ?m).
+SearchRewrite (O + _).
+Search list.
+
+
+(* Basic bool functions: 
+Basic list functions:
+Basic nat functions:
+
+
+*)
+
 
 (* 
 Coq has a special mechanism to support notations. One that is useful and not on by default is list notation
 
 Locate vernacular can be helpful.
-Require loads a library whereas Import brings its definitions into scope. Require Import does both.
+
+Require loads a library qualified whereas Import brings its definitions into scope. Require Import does both.
+For example 
+Require Vector.
+means we have to call Vector.cons, where Require Import Vector, means we can just call cons.
+
+
 
 Starting Notations
 
@@ -84,9 +115,7 @@ Starting Notations
 Require Import Lists.List.
 Import ListNotations.
 Compute app [ 1 ] [ 2 ; 3 ].
-Search (list ?m -> list ?m).
-SearchRewrite (O + _).
-Search list.
+
 
 
 About hd.
@@ -97,22 +126,33 @@ Compute hd 0 [ 1 ; 2 ; 3]. (* head takes a default value to make it total *)
 Compute hd 0 [].
 
 
-(* new names can be made via the Definition vernacular command *)
+(* New names can be made via the Definition vernacular command. 
+Definition has a couple different forms. You can bind names to input parameters to functions by putting them before the colon
 
-(* Sometimes coq can infer all the types.
-*)
-Definition double x : nat := 2 * x.
+ *)
+Definition double (x : nat) : nat := 2 * x.
 Compute double 3.
+
+(*  Defining double using a lambda instead. This is the same as the above. *)
+Definition double'' : nat -> nat := fun (x : nat) => 2 * x.
+
+(* Sometimes coq can infer all the types so you don't need to annotate them. Often you want to though. *)
 
 Definition double' x := 2 * x.
-Compute double 3.
+Check double'.
+Compute double' 3.
+
+(* Definiion can also be used to define types. As a dependently typed language, types and values are not kept apart. *)
+
+(* Haskell equivalent: type BoolList = [Bool] *)
+
+Definition boollist := list bool.
 
 
 
-(*  Defining double using a lambda instead *)
-Definition double'' := fun x => 2 * x.
 
-(* The standard in Haskell and ocaml is to allow type signatures to be inferrred or to place them on seperate lines. In Coq, this is not how it goes. The pieces are typed in place.  *)
+
+(* The standard in Haskell and ocaml is to allow type signatures to be inferred or to place them on seperate lines. In Coq, this is not how it goes. The pieces are typed in place.  *)
 
 Inductive rgb : Type :=
   | red : rgb
@@ -159,17 +199,39 @@ About pair.
 About sum.
 
 
-(* pattern matching  *)
+(* Pattern matching happens in explicit match statements, the equivalent of a Haskell "case". *)
 Definition andb (b1 : bool) (b2 : bool) : bool :=
   match b1 with
     | true => b2
     | false => false
   end.
 
+
+(* You can pattern match on multiple things at the same time. This is desugared into matching on b1 then matching on b2 *)
+
+Definition andb' (b1 : bool) (b2 : bool) : bool :=
+  match b1, b2 with
+    | true, true => true
+    | _, _ => false
+  end.
+
+
+(* Pattern matching allows some extra type annotation. It feels overblown at the moment, but Coq's type inference is far more finicky than other languages. 
+
+match x as y in () return 
+  |
+  |
+end
+
+Coq does not do nearly as much as you'd think in this match statement if you are used to Haskell GADT's or Agda/Idris.
+
+*)
+
+
 About andb.
 
-(* Recursive definitions need to be declared with Fixpoint
-Pattern matching happens in explicit mathc statements, the equivalent of Haskell "case".
+(* Recursive definitions need to be declared with Fixpoint.
+
 *)
 
 
@@ -187,12 +249,9 @@ Search list.
 About fold_left.
 Compute fold_left (fun x y => x + y) [1 ; 2 ; 3] 0.
 
-(* Lambda functions *)
 
 
-(* new data types are defined via Inductive *)
-
-
+(* Extraction *)
 
 Require Coq.extraction.Extraction.
 Extraction Language Haskell.
@@ -222,7 +281,9 @@ Inductive bool : Type :=
   | false : bool.
 *)
 
-(* Record command *)
+(* Record command
+
+ *)
 
 
 
@@ -285,14 +346,16 @@ bool_ind: forall P : bool -> Prop, P true -> P false -> forall b : bool, P b
                                                               *)
 
 (* 
+
+Not sure we should cover these
+
 Setoid
 
 
 Floating point numbers are rather difficult to reason about precisely. A replacement for some purposes is to use rational numbers
 QArith
 
-Maps and Sets
-
+Maps and Sets - a pain in the ass.
 
 Vectors
 

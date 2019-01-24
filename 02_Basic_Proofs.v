@@ -81,13 +81,32 @@ Proof. exact (fun (A:Type) (x:A) => x). Qed.
   For example, depending of whether zero is being added from the left or right is different.
   *)
 
-(* Equality is a propsition with a single constructor eq_refl. I recall finding this very puzzling, and I'm sure I still would if I was probed about it or contemplated hard. Equality is a fundamental, but subtle thing. I find that a rough picture of how typechecking works helps me to understand what is going on. 
+(* 
+A very important thing imported by default is the Equality type. The type has the notation a = b.
+Equality is a proposition with a single constructor eq_refl. I recall finding this very puzzling, and I'm sure I still would if I was probed about it or contemplated hard. Equality is a fundamental, but subtle thing. I find that a rough picture of how typechecking works helps me to understand what is going on. 
 
-x = y is a Prop, which is similar to a type
+x = y is a Prop, which is similar to a Type. Prop are intended to be used for non computational purposes, proofs only.
 There may be a way to construct a value of this type or not (depending whether you can actually prove the equality or not).
 
 
+Some basic combinators for equality
+Variables A B : Type.
+Variable f : A -> B.
+Variables x y z : A.
+
+Theorem eq_sym : x = y -> y = x.
+Theorem eq_trans : x = y -> y = z -> x = z.
+Theorem f_equal : x = y -> f x = f y.
+Theorem not_eq_sym : x <> y -> y <> x.
+
+so to rewrite the positions in an equality, you need to hand it a lambda that shows exactly which positions you want to change.
+
 *)
+
+Definition eq_3 : (3 = 3) := eq_refl.
+
+Definition eq_22 : (2 + 2 = 4) := eq_refl.
+
 Theorem eq_3: 3 = 3.
 Proof. exact eq_refl. Qed. 
 

@@ -49,12 +49,14 @@ https://github.com/uhub/awesome-coq
 Programming Language Foundations - An Agda Textbook
 https://plfa.github.io/
 
-
+Coq course
+https://github.com/vlopezj/coq-course
 
 A Listing with these links and more
 https://avigad.github.io/formal_methods_in_education/
 
-
+Haskell For Coq Programmer's
+http://blog.ezyang.com/2014/03/haskell-for-coq-programmers/
 
 ------
 
