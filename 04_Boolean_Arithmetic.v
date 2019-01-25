@@ -21,7 +21,7 @@ Compute Bnil.
 Compute Bcons true 0 Bnil.
 
 
-
+Compute Nat.modulo 12 8. (* infix mod available in nat_scope *)
 Definition word := Bvector 16.
 
 Definition wzero : word := Bvect_false 16.
