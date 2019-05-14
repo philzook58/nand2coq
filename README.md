@@ -25,6 +25,9 @@ http://adam.chlipala.net/cpdt/
 http://adam.chlipala.net/frap/
 http://plv.csail.mit.edu/kami/
 
+SiFive is reimplementing Kami. A very worthy README
+https://github.com/sifive/Kami
+
 Chlipala & Braibant - Featherweight Synthesis
 http://braibant.github.io/update/2014/07/31/fe-si.html
 
@@ -57,6 +60,9 @@ https://avigad.github.io/formal_methods_in_education/
 
 Haskell For Coq Programmer's
 http://blog.ezyang.com/2014/03/haskell-for-coq-programmers/
+
+RISC-V formal specs: 3 Haskell, 1 SAIL, 1 Kami
+https://mail.haskell.org/pipermail/haskell-cafe/2019-May/131067.html
 
 ------
 
