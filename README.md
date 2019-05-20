@@ -58,6 +58,9 @@ https://avigad.github.io/formal_methods_in_education/
 Haskell For Coq Programmer's
 http://blog.ezyang.com/2014/03/haskell-for-coq-programmers/
 
+Formal verification of microprocessors: a first experiment with the Coq proof assistant
+https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.39.9165&rep=rep1&type=pdf
+
 ------
 
 It would be super cool to actually run this on an FPGA. The open source FPGA world is blowing up
