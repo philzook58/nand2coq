@@ -7,7 +7,7 @@ import Text.Parsec.Language (emptyDef)
 
 main :: IO ()
 main = parseTest (oneOf "aeiou") "a" -- someFunc
-
+{-
 lexer :: Tok.TokenParser ()
 lexer = makeTokenParser style
   where
@@ -23,7 +23,8 @@ lexer = makeTokenParser style
              }
 
 registers = map ('R':) $ map show [0 .. 15]
-jumps = ["JEQ", "JGT", "JGE", "JLT", "JLE", "JMP", "JNE", ]
+jumps = ["JEQ", "JGT", "JGE", "JLT", "JLE", "JMP", "JNE" ]
+-}
 --manyOf line  eof
 {-
 regD = char 'D'
@@ -34,14 +35,15 @@ reg = oneOf "DMA"
 
 at = char "@"
 -}
-
+{-
 numericLit ::Parsec String () Memory
 numericLit = Lit . read <$> many1 digit {-do 
 	           x <- many1 digit
 	           return $ Lit (read x) -}
 
 xreg :: Parsec String () Register
-xreg = read . return <$> oneOf "DMA"{-do 
+xreg = read . return <$> oneOf "DMA"
+-}{-do 
 		r <- oneOf "DMA"
 		return $ case r of
 					'D' -> XD
