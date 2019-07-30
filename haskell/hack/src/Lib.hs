@@ -40,8 +40,14 @@ example = [
 	]
 
 
+type Word = Compose V4 V4 Bool
+-- Maybe also keyboard
+data CompState = {regD :: Word , regA :: Word, regM :: Word, ram :: Map.Map Word Word}
 
+newtype Ram = Ram (Map.Map )
 
+interp :: Instruction -> CompState -> CompState
+interp 
 
 
 
