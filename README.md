@@ -61,6 +61,9 @@ https://avigad.github.io/formal_methods_in_education/
 Haskell For Coq Programmer's
 http://blog.ezyang.com/2014/03/haskell-for-coq-programmers/
 
+Formal verification of microprocessors: a first experiment with the Coq proof assistant
+https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.39.9165&rep=rep1&type=pdf
+
 RISC-V formal specs: 3 Haskell, 1 SAIL, 1 Kami
 https://mail.haskell.org/pipermail/haskell-cafe/2019-May/131067.html
 

@@ -11,6 +11,13 @@ https://coq.inria.fr/library/Coq.ZArith.BinIntDef.html
 
 The Def files are the juiciest
 
+
+The bedrock bitvector library has everything we could need. Too much? Maybe rebuild the pieces we want?
+https://github.com/mit-plv/bbv/tree/master/theories
+
+Pertinent?
+https://github.com/coq-contribs/circuits
+
 *)
 Require Import Bvector.
 Require Vector.
