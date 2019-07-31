@@ -1,28 +1,99 @@
 
 
-(**
-
-1. Basics:
+(** * Basics
 
 
-Let's start avoiding the unique parts of coq. The Coq system has the equivlaent of many things you might be used to in a functional programming language like OCaml or Haskell.
+Coq is a functional programming language and interactive proof assistant. Coq is written in the OCaml language, with a bit of C. It is in fact the reason why OCaml was first developed. 
+Let's start avoiding the perhaps more unfamiliar proof related parts of Coq. The Coq system has the equivlaent of many things you might be used to in a functional programming language like OCaml or Haskell.
 
-First off, part of the coolness of coq is the interactivity of the tools. It is sort of like a REPL on steroids. It is absolutely vital you follow along with an interactive mode in an editor.
-There are a couple options. 
+First off, part of the coolness of coq is the interactivity of the tools. It is a REPL or notebook on steroids. It is absolutely vital you follow along with an interactive mode in an editor.
+There are a couple options:
 
+- CoqIDE comes distributed along with coq.
+- Proof General for Emacs
 
-CoqIDE comes along with coq.
-Proof General for Emacs
-VSCoq for VSCode
 
 They all have the ability to step through code via hotkey bindings. You need to learn those.
 Proof General execute lines with Ctrl+C + Enter
 VSCoq is Ctrl+Alt+ArrowKeys, (Ctrl + Command + ArrowKeys on Mac)
 
+
+The interactive mode of coq has many commands. These start with capital latters and are called Vernacular commands. The terminology Vernacular is why coq files are called .v files.
+
+You can compute values by calling Compute or by Eval compute, which is slightly different. Eval has more options   **)
+
+
+Compute andb true false.
+Eval compute in andb true false. (* The same thing *)
+Compute 1 + 1.
+Compute 2 * 3.
+Compute 5 - 2. 
+Compute 3 - 5. (* subtraction on nat is defined to be 0 if it would be negative *)
+
+(** 
+You can make new definitions using the Definition vernacular.
+ *)
+
+Definition ten := 10.
+Compute ten.
+
+
+(** The following is a simple function definition *)
+
+Definition inc_nat (x : nat) := x + 1.
+
+
+(** 
+Functions are curried
+ *)
+Definition make_inc (x : nat) (y : nat) := x + y.
+Definition inc_2 (x : nat) := make_inc 2.
+
+(** 
+
+Recursive functions can be defined using the Fixpoint vernacular.
+
+ *)
+(** Recursive definitions need to be declared with Fixpoint.
+
+**)
+
+
+Fixpoint factorial (x : nat) : nat :=
+  match x with
+   | 0 => 1
+   | S n => x * (factorial n)
+  end.
+
+Compute factorial 5.
+(*
+Require Import Coq.Init.Nat.
+Compute (eqb 1 2).
+
+
+Fixpoint factorial (x : nat) := if (eqb x 0) then 1 else x * (factorial (x - 1)).
+Compute factorial 5.
+ *)
+
+(** Anonymous functions *)
+Definition my_lambda := fun x => x * x.
+Compute my_lambda 2.
+
+(**
+
+About and Print will tell us information about something. Print tends to show the actual definitions.
+You can also ask about operators by putting them in quotes
+- About
+- Print
+- Locate 
+- Check - You can ask for the type of something with Check.
+- Search - You can search for thing containi
+- Abort - 
+- 
  **)
 
 
-(**
+(** ** Built in Data Structures
 
 By default Coq imports a prelude. 
 
@@ -34,43 +105,32 @@ https://coq.inria.fr/refman/language/coq-library.html
 You can find a list of default built in data types here
  https://coq.inria.fr/library/Coq.Init.Datatypes.html
 
-This includes the following (hopefully) familiar friends:
-bool, list, option, sum, prod, nat, unit, Empty_set, comparison, identity
+This includes the following possibly familiar friends:
+ - bool
+ - list
+ - option
+ - sum 
+ - prod
+ - nat
+ - unit
+ - Empty_set
+ - comparison
+ - identity
 
 In Haskell these would be
 Bool, [], Maybe, Either, Tuple, ? I don't think the standard library has a Nat , (), Void, Ordering, 
 
 There are also some default functions available for these data types. More functions are available upon extra importing
 
-The interactive mode of coq has many commands. These start with capital latters and are called Vernacular commands. The terminology Vernacular is why coq files are called .v files.
+Hot tip when scouring throug the coq standard library, the module you want is probably the one in parenthensis.
+*)
 
-About and Print will tell us information about something. Print tends to show the actual definitions.
-You can also ask about operators by putting them in quotes
-
-Locate 
-
-
-**)
-
+Compute (1 + 1).
 About bool.
 About prod.
 About list.
 
 
-(** You can compute values by calling Compute or by Eval compute, which is slightly different. Eval has more options   **)
-
-
-Compute andb true false. (** You can run code by using the Compute vernacular. **)
-Compute 1 + 1.
-Compute 2 * 3.
-Compute 5 - 2. 
-Compute 3 - 5. (** subtraction is defined to be 0 if it would be negative **)
-Print "-". 
-Compute app (cons 1 nil) (cons 2 (cons 3 nil)). (** app is the list append function **)
-Print app. (** Print can give you a more complete infromation. For example the code implementing the function **)
-
-
-(** You can ask for the type of something by Check **)
 
 (** What is the nat equality operator? I don't know. But I do know what there type signature is, so I can use the Search vernacular to find functions in the context. Search is very powerful and useful **)
 
@@ -81,8 +141,8 @@ Compute Nat.div 6 5. (** rounds down **)
 (** We can also search for anything that involves list **)
 Search list.
 Search bool.
-Search bool -> bool -> _.
-Search ?m = ?m.
+Search (bool -> bool -> _).
+Search (?m = ?m).
 Search (list ?m -> list ?m).
 SearchRewrite (O + _).
 Search list.
@@ -95,13 +155,33 @@ Basic nat functions:
 
 **)
 
+(** ** Scope and Operators 
+In the standard library there are a lot of name collisions. 
+
+Open Scope nat_scope.
+
+Close Scope nat_scope.
+ *)
+
+
+
+Print Scopes.
+(*
+(yada yada)%Z uses the scope delimiter Z to know that the interior should use Z_scope
+
+Require yada brings it in but does not open it. You need to preface calls with the module name
+Require Import yada does open it.
+*)
 
 (** 
 Coq has a special mechanism to support notations. One that is useful and not on by default is list notation
 
 Locate vernacular can be helpful.
 
-Require loads a library qualified whereas Import brings its definitions into scope. Require Import does both.
+
+Modules are files or regions explicilty notated as modules, which act like files. For more on modules as a concept, it may be preferable to seek out an OCaml tutorial.
+
+Require loads a module qualified whereas Import brings its definitions into scope. Require Import does both.
 For example 
 Require Vector.
 means we have to call Vector.cons, where Require Import Vector, means we can just call cons.
@@ -112,24 +192,28 @@ Starting Notations
 
  **)
 
-Require Import Lists.List.
-Import ListNotations.
+Require Lists.List.
+Import List.ListNotations.
 Compute app [ 1 ] [ 2 ; 3 ].
 
 
 
 About hd.
 
-Compute hd 0 (cons 1 nil).
-Compute (tl ([ 1 ; 2 ; 3])).
-Compute hd 0 [ 1 ; 2 ; 3]. (** head takes a default value to make it total **)
-Compute hd 0 [].
+Compute List.hd 0 (cons 1 nil).
+Compute (List.tl ([ 1 ; 2 ; 3])).
+Compute List.hd 0 [ 1 ; 2 ; 3]. (** head takes a default value to make it total **)
+Compute List.hd 0 [].
 
 
 (** New names can be made via the Definition vernacular command. 
 Definition has a couple different forms. You can bind names to input parameters to functions by putting them before the colon
 
  **)
+Print "-". 
+Compute app (cons 1 nil) (cons 2 (cons 3 nil)). (** app is the list append function **)
+Print app. (** Print can give you a more complete infromation. For example the code implementing the function **)
+
 Definition double (x : nat) : nat := 2 * x.
 Compute double 3.
 
@@ -142,7 +226,7 @@ Definition double' x := 2 * x.
 Check double'.
 Compute double' 3.
 
-(** Definiion can also be used to define types. As a dependently typed language, types and values are not kept apart. **)
+(** Definiion can also be used to define types. As a dependently typed language, types and values are not kept apart and the same consructs can be used on both. **)
 
 (** Haskell equivalent: type BoolList = [Bool] **)
 
@@ -230,18 +314,7 @@ Coq does not do nearly as much as you'd think in this match statement if you are
 
 About andb.
 
-(** Recursive definitions need to be declared with Fixpoint.
 
-**)
-
-
-Fixpoint factorial (x : nat) : nat :=
-  match x with
-   | 0 => 1
-   | S n => x * (factorial n)
-  end.
-
-Compute factorial 5.
 
 
 Search list.
@@ -379,4 +452,12 @@ Import ListNotations.
 
 
 
+(** ** Further Reading
 
+- https://coq.inria.fr/refman/index.html - Coq reference Manual
+- https://softwarefoundations.cis.upenn.edu/ - Software Foundations
+- http://adam.chlipala.net/cpdt/ - Certified Programming with Dependent Types
+- https://math-comp.github.io/mcb/ - Mathematical Components
+
+
+*)

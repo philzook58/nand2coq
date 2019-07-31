@@ -1,7 +1,7 @@
 # Verilog Implementation
 
 
-Fair warning: I believe where I left this off, the computer is not near correct. In particular I still need to implement a fetch-execute clock division at least.
+Fair warning: I believe where I left this off, the computer is not remotely near correct. In particular I still need to implement a fetch-execute clock division at least.
 
 
 Description of files:
@@ -16,15 +16,13 @@ I suspect that directly trying to use the coq output will not make the verilog c
 Amusingly, both coq and verilog use .v files.
 
 
-Apio
 
-IceStudio
+# Verilog
 
-Verilog Resources
+- https://zipcpu.com/tutorial/
+- http://asic-world.com/verilog/veritut.html
 
-https://zipcpu.com/tutorial/
-
-Verilog is built of of module units. Verilog is a Hardware Description Language (HDL).
+Verilog is built out of module units. Verilog is a Hardware Description Language (HDL).
 
 Here is a simple not gate module
 
@@ -73,7 +71,7 @@ folds are prefix operators
 
 We will need a clock signal and timing elements. In verilog
 
-
+blocking vs non blocking assignment
 
 
 
@@ -92,3 +90,8 @@ Yosys SMT
 
 https://symbiyosys.readthedocs.io/en/latest/index.html
 
+
+
+Apio
+
+IceStudio

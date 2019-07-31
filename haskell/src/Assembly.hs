@@ -1,6 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude, FlexibleContexts #-}
-module Hack
- where
+{-# LANGUAGE NoImplicitPrelude, FlexibleContexts, BinaryLiterals #-}
+module Assembly where
 
 import qualified Data.Map.Strict as Map
 import Linear.V4
@@ -92,11 +91,24 @@ data CExpr = Plus X Y | Sub X Y | And X Y | Or X Y | Not X | Reg X | One | NegOn
 -- we could make smart constructors for that
 data X = XA | XD | XM deriving (Eq, Show, Ord, Enum, Bounded)
 data Y = YA | YD | YM | YOne deriving (Eq, Show, Ord, Enum, Bounded)
-type Dest = [Register] -- Ad | Dd | Md | MDd | AMd | ADd | AMDd | Nulld -- [Register] ?
+-- type Dest = [Register] -- Ad | Dd | Md | MDd | AMd | ADd | AMDd | Nulld -- [Register] ?
 
--- data Dest = Dest {dA :: Bool, dM :: Bool, dD :: Bool} -- another option
+data Dest = Dest {dA :: Bool, dM :: Bool, dD :: Bool} deriving (Eq, Show, Ord) -- another option
 
-data Jump =  JGT | JEQ | JGE | JLT | JNE | JLE | JMP | JNull deriving (Eq, Show, Ord, Enum, Bounded)
+data Jump =  JNull | JGT | JEQ | JGE | JLT | JNE | JLE | JMP  deriving (Eq, Show, Ord, Enum, Bounded)
+
+-- could also use enum instance, but it just isn't worth it. Too fancy.
+-- figure 4.5 page 69
+jump_bitcode :: Jump -> Word
+jump_bitcode JNull =  0b000
+jump_bitcode JGT = 0b001
+jump_bitcode JEQ = 0b010 
+jump_bitcode JGE = 0b011
+jump_bitcode JLT = 0b100
+jump_bitcode JNE = 0b101 
+jump_bitcode JLE = 0b110
+jump_bitcode JMP = 0b111
+
 
 -- Is this right? I don't think so
 cinterp :: CExpr -> Word -> Word -> Word
@@ -128,11 +140,11 @@ fillReg :: Register -> Word -> CompState -> CompState
 fillReg A w s = s {regA = w} 
 fillReg D w s = s {regD = w}  
 fillReg M w s = s {regM = w}  
-
+{-
 fillDest :: Dest -> Word -> CompState -> CompState
 fillDest [] _ s = s 
 fillDest (d : ds) w s = fillDest ds w (fillReg d w s)    
-
+-}
 -- no
 jump :: Jump -> Word -> Bool
 jump JGT x = x > 0
@@ -148,16 +160,21 @@ jump JNull _ = False
 
 
 
+
+
+{-
+If we choose to write programs inside of haskell, can we use do notation to make everything look nice?
+Yes.
+
 (.|) :: CExpr -> Jump -> Instruction
 cexpr .| jump = C [] cexpr jump
 
-(.=) :: Dest -> CExpr -> Instruction
-dest .= cexpr = C dest cexpr JNull
+(:=) :: Dest -> CExpr -> Instruction
+dest := cexpr = C dest cexpr JNull
 
 at :: Memory -> Instruction
 at = At
 
-{-
 example :: Program
 example = [
 	at R1,
