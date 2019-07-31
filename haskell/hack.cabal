@@ -1,0 +1,75 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 650e4e51d4555daac9332cf78de6b65ec9515bfee627dbe00e075b65458ee1f9
+
+name:           hack
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/hack#readme>
+homepage:       https://github.com/githubuser/hack#readme
+bug-reports:    https://github.com/githubuser/hack/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2018 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/hack
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_hack
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , hedgehog
+    , linear
+    , mtl
+  default-language: Haskell2010
+
+executable hack-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_hack
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , hack
+    , hedgehog
+    , linear
+    , mtl
+    , parsec
+  default-language: Haskell2010
+
+test-suite hack-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_hack
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , hack
+    , hedgehog
+    , linear
+    , mtl
+  default-language: Haskell2010
