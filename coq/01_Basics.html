@@ -1,0 +1,650 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>01_Basics</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library 01_Basics</h1>
+
+<div class="code">
+
+<br/>
+</div>
+
+<div class="doc">
+
+<div class="paragraph"> </div>
+
+1. Basics:
+
+<div class="paragraph"> </div>
+
+Let's start avoiding the unique parts of coq. The Coq system has the equivlaent of many things you might be used to in a functional programming language like OCaml or Haskell.
+
+<div class="paragraph"> </div>
+
+First off, part of the coolness of coq is the interactivity of the tools. It is sort of like a REPL on steroids. It is absolutely vital you follow along with an interactive mode in an editor.
+There are a couple options. 
+
+<div class="paragraph"> </div>
+
+CoqIDE comes along with coq.
+Proof General for Emacs
+VSCoq for VSCode
+
+<div class="paragraph"> </div>
+
+They all have the ability to step through code via hotkey bindings. You need to learn those.
+Proof General execute lines with Ctrl+C + Enter
+VSCoq is Ctrl+Alt+ArrowKeys, (Ctrl + Command + ArrowKeys on Mac)
+
+<div class="paragraph"> </div>
+
+ 
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+By default Coq imports a prelude. 
+
+<div class="paragraph"> </div>
+
+A decent basic overview of what is in the standard library and what is imported by default
+
+<div class="paragraph"> </div>
+
+https://coq.inria.fr/refman/language/coq-library.html
+
+<div class="paragraph"> </div>
+
+You can find a list of default built in data types here
+ https://coq.inria.fr/library/Coq.Init.Datatypes.html
+
+<div class="paragraph"> </div>
+
+This includes the following (hopefully) familiar friends:
+bool, list, option, sum, prod, nat, unit, Empty_set, comparison, identity
+
+<div class="paragraph"> </div>
+
+In Haskell these would be
+Bool, <font size=-2>&#9744;</font>, Maybe, Either, Tuple, ? I don't think the standard library has a Nat , (), Void, Ordering, 
+
+<div class="paragraph"> </div>
+
+There are also some default functions available for these data types. More functions are available upon extra importing
+
+<div class="paragraph"> </div>
+
+The interactive mode of coq has many commands. These start with capital latters and are called Vernacular commands. The terminology Vernacular is why coq files are called .v files.
+
+<div class="paragraph"> </div>
+
+About and Print will tell us information about something. Print tends to show the actual definitions.
+You can also ask about operators by putting them in quotes
+
+<div class="paragraph"> </div>
+
+Locate 
+
+<div class="paragraph"> </div>
+
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">bool</span>.<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">prod</span>.<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">list</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+You can compute values by calling Compute or by Eval compute, which is slightly different. Eval has more options   
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">andb</span> <span class="id" title="var">true</span> <span class="id" title="var">false</span>. </div>
+
+<div class="doc">
+You can run code by using the Compute vernacular. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Compute</span> 1 + 1.<br/>
+<span class="id" title="keyword">Compute</span> 2 * 3.<br/>
+<span class="id" title="keyword">Compute</span> 5 - 2.<br/>
+<span class="id" title="keyword">Compute</span> 3 - 5. </div>
+
+<div class="doc">
+subtraction is defined to be 0 if it would be negative 
+</div>
+<div class="code">
+<span class="id" title="keyword">Print</span> "-".<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">app</span> (<span class="id" title="var">cons</span> 1 <span class="id" title="var">nil</span>) (<span class="id" title="var">cons</span> 2 (<span class="id" title="var">cons</span> 3 <span class="id" title="var">nil</span>)). </div>
+
+<div class="doc">
+app is the list append function 
+</div>
+<div class="code">
+<span class="id" title="keyword">Print</span> <span class="id" title="var">app</span>. </div>
+
+<div class="doc">
+Print can give you a more complete infromation. For example the code implementing the function 
+<div class="paragraph"> </div>
+
+ You can ask for the type of something by Check 
+<div class="paragraph"> </div>
+
+ What is the nat equality operator? I don't know. But I do know what there type signature is, so I can use the Search vernacular to find functions in the context. Search is very powerful and useful 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Search</span> ( <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">bool</span>).<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">Nat.eqb</span> 1 2.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">Nat.div</span> 6 5. </div>
+
+<div class="doc">
+rounds down 
+<div class="paragraph"> </div>
+
+ We can also search for anything that involves list 
+</div>
+<div class="code">
+<span class="id" title="keyword">Search</span> <span class="id" title="var">list</span>.<br/>
+<span class="id" title="keyword">Search</span> <span class="id" title="var">bool</span>.<br/>
+<span class="id" title="keyword">Search</span> <span class="id" title="var">bool</span> -&gt; <span class="id" title="var">bool</span> -&gt; <span class="id" title="var">_</span>.<br/>
+<span class="id" title="keyword">Search</span> ?<span class="id" title="var">m</span> = ?<span class="id" title="var">m</span>.<br/>
+<span class="id" title="keyword">Search</span> (<span class="id" title="var">list</span> ?<span class="id" title="var">m</span> -&gt; <span class="id" title="var">list</span> ?<span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">SearchRewrite</span> (<span class="id" title="var">O</span> + <span class="id" title="var">_</span>).<br/>
+<span class="id" title="keyword">Search</span> <span class="id" title="var">list</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Basic bool functions: 
+Basic list functions:
+Basic nat functions:
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+Coq has a special mechanism to support notations. One that is useful and not on by default is list notation
+
+<div class="paragraph"> </div>
+
+Locate vernacular can be helpful.
+
+<div class="paragraph"> </div>
+
+Require loads a library qualified whereas Import brings its definitions into scope. Require Import does both.
+For example 
+Require Vector.
+means we have to call Vector.cons, where Require Import Vector, means we can just call cons.
+
+<div class="paragraph"> </div>
+
+Starting Notations
+
+<div class="paragraph"> </div>
+
+ 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Lists.List</span>.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">ListNotations</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">app</span> [ 1 ] [ 2 ; 3 ].<br/>
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">hd</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">hd</span> 0 (<span class="id" title="var">cons</span> 1 <span class="id" title="var">nil</span>).<br/>
+<span class="id" title="keyword">Compute</span> (<span class="id" title="var">tl</span> ([ 1 ; 2 ; 3])).<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">hd</span> 0 [ 1 ; 2 ; 3]. </div>
+
+<div class="doc">
+head takes a default value to make it total 
+</div>
+<div class="code">
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">hd</span> 0 [].<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+New names can be made via the Definition vernacular command. 
+Definition has a couple different forms. You can bind names to input parameters to functions by putting them before the colon
+
+<div class="paragraph"> </div>
+
+ 
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">double</span> (<span class="id" title="var">x</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span> := 2 * <span class="id" title="var">x</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">double</span> 3.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+ Defining double using a lambda instead. This is the same as the above. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">double''</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">nat</span> := <span class="id" title="keyword">fun</span> (<span class="id" title="var">x</span> : <span class="id" title="var">nat</span>) =&gt; 2 * <span class="id" title="var">x</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Sometimes coq can infer all the types so you don't need to annotate them. Often you want to though. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">double'</span> <span class="id" title="var">x</span> := 2 * <span class="id" title="var">x</span>.<br/>
+<span class="id" title="keyword">Check</span> <span class="id" title="var">double'</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">double'</span> 3.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Definiion can also be used to define types. As a dependently typed language, types and values are not kept apart. 
+<div class="paragraph"> </div>
+
+ Haskell equivalent: type BoolList = <span class="inlinecode"><span class="id" title="var">Bool</span></span> 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">boollist</span> := <span class="id" title="var">list</span> <span class="id" title="var">bool</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The standard in Haskell and ocaml is to allow type signatures to be inferred or to place them on seperate lines. In Coq, this is not how it goes. The pieces are typed in place.  
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">rgb</span> : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="tactic">red</span> : <span class="id" title="var">rgb</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">green</span> : <span class="id" title="var">rgb</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">blue</span> : <span class="id" title="var">rgb</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A pure enumeration type can get by with very little annotation 
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">rgb'</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">red'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">green'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">blue'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">mycont</span> : <span class="id" title="keyword">Type</span> := <br/>
+&nbsp;&nbsp;| <span class="id" title="var">IsNat</span> (<span class="id" title="var">x</span> : <span class="id" title="var">nat</span>) <br/>
+&nbsp;&nbsp;| <span class="id" title="var">IsBool</span> (<span class="id" title="var">b</span> : <span class="id" title="var">bool</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+From a Haskell perspective, type definitions are most similar to GADT syntax 
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">mycont'</span> : <span class="id" title="keyword">Type</span> := <br/>
+&nbsp;&nbsp;| <span class="id" title="var">IsNat'</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">mycont'</span> <br/>
+&nbsp;&nbsp;| <span class="id" title="var">IsBool'</span> : <span class="id" title="var">bool</span> -&gt; <span class="id" title="var">mycont'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">rgb'</span>.<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">rgb</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Inferred parameters are given in braces {}. When using this function, you can chooce to explicity include these arguments or leave them implciit 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">myid</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} <span class="id" title="var">x</span> : <span class="id" title="var">A</span> := <span class="id" title="var">x</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">myid</span> 3.<br/>
+</div>
+
+<div class="doc">
+ Adding @ makes all arguments explcit 
+</div>
+<div class="code">
+<span class="id" title="keyword">Compute</span> @<span class="id" title="var">myid</span> <span class="id" title="var">nat</span> 3.<br/>
+</div>
+
+<div class="doc">
+Particular arguments can be supplied by name 
+</div>
+<div class="code">
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">myid</span> (<span class="id" title="var">A</span>:=<span class="id" title="var">nat</span>) 3.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The equivalent of a type alias in Haskell 
+type NatList = <span class="inlinecode"><span class="id" title="var">Nat</span></span>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">natlist</span> :=  <span class="id" title="var">list</span> <span class="id" title="var">nat</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">pair</span> 1 2.<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">pair</span>.<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">sum</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Pattern matching happens in explicit match statements, the equivalent of a Haskell "case". 
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">andb</span> (<span class="id" title="var">b1</span> : <span class="id" title="var">bool</span>) (<span class="id" title="var">b2</span> : <span class="id" title="var">bool</span>) : <span class="id" title="var">bool</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">b1</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">true</span> =&gt; <span class="id" title="var">b2</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">false</span> =&gt; <span class="id" title="var">false</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+You can pattern match on multiple things at the same time. This is desugared into matching on b1 then matching on b2 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">andb'</span> (<span class="id" title="var">b1</span> : <span class="id" title="var">bool</span>) (<span class="id" title="var">b2</span> : <span class="id" title="var">bool</span>) : <span class="id" title="var">bool</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">b1</span>, <span class="id" title="var">b2</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">true</span>, <span class="id" title="var">true</span> =&gt; <span class="id" title="var">true</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">_</span>, <span class="id" title="var">_</span> =&gt; <span class="id" title="var">false</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Pattern matching allows some extra type annotation. It feels overblown at the moment, but Coq's type inference is far more finicky than other languages. 
+
+<div class="paragraph"> </div>
+
+match x as y in () return 
+  |
+  |
+end
+
+<div class="paragraph"> </div>
+
+Coq does not do nearly as much as you'd think in this match statement if you are used to Haskell GADT's or Agda/Idris.
+
+<div class="paragraph"> </div>
+
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">andb</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Recursive definitions need to be declared with Fixpoint.
+
+<div class="paragraph"> </div>
+
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">factorial</span> (<span class="id" title="var">x</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">x</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;| 0 =&gt; 1<br/>
+&nbsp;&nbsp;&nbsp;| <span class="id" title="var">S</span> <span class="id" title="var">n</span> =&gt; <span class="id" title="var">x</span> * (<span class="id" title="var">factorial</span> <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">factorial</span> 5.<br/>
+
+<br/>
+<span class="id" title="keyword">Search</span> <span class="id" title="var">list</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">fold_left</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">fold_left</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> =&gt; <span class="id" title="var">x</span> + <span class="id" title="var">y</span>) [1 ; 2 ; 3] 0.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Extraction 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="var">Coq.extraction.Extraction</span>.<br/>
+<span class="id" title="keyword">Extraction</span> <span class="id" title="var">Language</span> <span class="id" title="var">Haskell</span>.<br/>
+<span class="id" title="keyword">Recursive Extraction</span> <span class="id" title="var">app</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Extraction</span> "app.hs" <span class="id" title="var">app</span>. </div>
+
+<div class="doc">
+extract to a file  You can inspect the Haskell equivalent 
+</div>
+<div class="code">
+<span class="id" title="keyword">Extraction</span> <span class="id" title="var">app</span>.<br/>
+<span class="id" title="keyword">Recursive Extraction</span> <span class="id" title="var">app</span>.<br/>
+<span class="id" title="keyword">Print</span> <span class="id" title="var">rev'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">app</span>.<br/>
+</div>
+
+<div class="doc">
+
+<div class="paragraph"> </div>
+
+    
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+Inductive bool : Type :=
+  | true : bool
+  | false : bool.
+
+<div class="paragraph"> </div>
+
+ Record command
+
+<div class="paragraph"> </div>
+
+ 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">andb</span> <span class="id" title="var">true</span> <span class="id" title="var">true</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">andb</span> <span class="id" title="var">false</span> <span class="id" title="var">true</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Check</span> <span class="id" title="var">andb</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The prod type definition looks like this
+
+<div class="paragraph"> </div>
+
+Inductive prod (A : Type) (B : Type) : Type :=
+  | pair : A -&gt; B -&gt; prod A B.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Check</span> <span class="id" title="var">pair</span>.<br/>
+<span class="id" title="keyword">Compute</span> <span class="id" title="var">pair</span> <span class="id" title="var">nat</span> <span class="id" title="var">bool</span> 3 <span class="id" title="var">true</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+https://coq.inria.fr/refman/proof-engine/vernacular-commands.html
+                                                     
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">About</span> <span class="id" title="var">pair</span>.<br/>
+<span class="id" title="keyword">Search</span> <span class="id" title="var">nat</span>.<br/>
+<span class="id" title="keyword">Search</span> <span class="id" title="var">bool</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">mysection</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Variable</span> <span class="id" title="var">T</span> : <span class="id" title="keyword">Set</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Variable</span> <span class="id" title="var">S</span> : <span class="id" title="keyword">Set</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <span class="id" title="var">myfst</span> () := <br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">mysection</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+
+<div class="paragraph"> </div>
+
+https://stackoverflow.com/questions/29322534/coq-prop-versus-set-in-typen
+
+<div class="paragraph"> </div>
+
+Prop, Type, Set
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+false: bool
+true: bool
+andb: bool -&gt; bool -&gt; bool
+bool_rect: forall P : bool -&gt; Type, P true -&gt; P false -&gt; forall b : bool, P b
+bool_ind: forall P : bool -&gt; Prop, P true -&gt; P false -&gt; forall b : bool, P b
+                                                                           bool_rec: forall P : bool -&gt; Set, P true -&gt; P false -&gt; forall b : bool, P b
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+                                                              
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+Not sure we should cover these
+
+<div class="paragraph"> </div>
+
+Setoid
+
+<div class="paragraph"> </div>
+
+Floating point numbers are rather difficult to reason about precisely. A replacement for some purposes is to use rational numbers
+QArith
+
+<div class="paragraph"> </div>
+
+Maps and Sets - a pain in the ass.
+
+<div class="paragraph"> </div>
+
+Vectors
+
+<div class="paragraph"> </div>
+
+Strings
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+
+<div class="paragraph"> </div>
+
+Require Import Coq.Arith.Arith.
+Require Import Coq.Bool.Bool.
+Require Export Coq.Strings.String.
+Require Import Coq.Logic.FunctionalExtensionality.
+Require Import Coq.Lists.List.
+Import ListNotations.
+
+<div class="paragraph"> </div>
+
+
+</div>
+<div class="code">
+
+<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

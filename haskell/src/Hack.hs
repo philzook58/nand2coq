@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude, FlexibleContexts #-}
-module Lib
+module Hack
  where
 
 import qualified Data.Map.Strict as Map
@@ -10,9 +10,7 @@ import Data.Bits
 import Control.Monad.State.Strict
 import Data.Coerce
 import Data.Bifunctor
-import Data.Word
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+import Data.Word -- should be Data.Int
 
 
 data Instruction = At Memory | C Dest CExpr Jump deriving (Eq, Show, Ord)

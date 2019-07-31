@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Hack
 import Text.Parsec
 import Text.Parsec.Token as Tok
 import Text.Parsec.Language (emptyDef)

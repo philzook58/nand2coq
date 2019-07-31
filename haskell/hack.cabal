@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 650e4e51d4555daac9332cf78de6b65ec9515bfee627dbe00e075b65458ee1f9
+-- hash: d2ced349652d866de72e80dcca94b4b1ed984253d249c0efdd2dba4be53f5810
 
 name:           hack
 version:        0.1.0.0
@@ -27,7 +27,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Hack
   other-modules:
       Paths_hack
   hs-source-dirs:
