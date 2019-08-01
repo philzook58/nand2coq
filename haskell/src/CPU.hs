@@ -2,9 +2,14 @@ module CPU where
 
 import Data.Word
 {-
-Haskell circuit description language
-Gates
+
 CPU
+
+
+https://github.com/wyager/CPU
+https://yager.io/CPU/CPU1.html
+
+
 
 Functional Specification of computer pieces.
 Put
@@ -12,8 +17,8 @@ Put
 -}
 
 
-{-
-Excerpt Figure 5.2
+{-| $ Excerpt Figure 5.2
+
 
 Chip Name: CPU // Central Processing Unit
 Inputs:

@@ -5,7 +5,7 @@ module alu(
 	, input zx // zero x
 	, input zy // zero y
 	, input nx // negate result on x
-	, input ny // """
+	, input ny // 
 	, input f // Plus is 1 or and if 0
 	, input no // negate result?
 	, output zr // is it exactly zero

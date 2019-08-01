@@ -72,7 +72,38 @@ folds are prefix operators
 We will need a clock signal and timing elements. In verilog
 
 blocking vs non blocking assignment
+(=) is blocking, (<=) is non blocking.
+(=) is more similar to the assignment operator in iperative programming languages. You can sequence them in the order you write them down.
+(<=) is non blocking so the order you write them doesn't matter. They are more like a bunch of wires. Usually you'll want this operator in the always block.
 
+### Initial Blocks
+
+```verilog 
+
+initial begin
+    clk = 0;
+    reset = 0;
+    req_0 = 0;
+    eq_1 = 0;
+end
+```
+
+### Simulating
+
+It is very important to be be able to run your circuits to actually see if they do the right thing
+
+Icarus verilog is one such tool. You write test benches in verilog using funky consutrcts. I think we'll avoid
+
+Using verilog as both your circuit descripition language and as your testbench language seems extra confusing to me. There are constructs in verilog that make absolutely no sense as circuits. We have tried to avoid mentioning any so far and let's just keep it that way.
+
+Verilator is a verilog to C++ compiler. It will output C++ code that you can import into a C++ program. I don't love C++, but it is at least a relatively normal programming language.
+
+https://www.veripool.org/wiki/verilator
+
+`brew install verilator`
+
+
+## Other
 
 
 Getting Started with IceStick
@@ -82,9 +113,7 @@ http://www.clifford.at/icestorm/
 on Ubuntu
 `sudo apt-get install fpga-icetstorm`
 
-Verilator
 
-https://www.veripool.org/wiki/verilator
 
 Yosys SMT
 
