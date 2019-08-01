@@ -22,7 +22,8 @@ Output verilog.
 http://hackage.haskell.org/package/verilog
 
 
-
+Circuits are also directed acyclic graphs. Could use a graph data structure
+Or we could use a functional specification again?
 
     
 -}

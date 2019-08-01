@@ -14,6 +14,11 @@ https://yager.io/CPU/CPU1.html
 Functional Specification of computer pieces.
 Put
 
+TODO:
+Get all the high level pieces we need.
+Copy the appropraute excerpts from the book
+implement them.
+
 -}
 
 
@@ -48,5 +53,17 @@ Function: Executes the instruction according to the Hack machine language specif
 -}
 data CPUIn = CPUIn {memIn :: Word16,  instruction :: Word16, reset :: Bool}
 data CPUOut = CPUOut {memOut :: Word16,  pc :: Word16, writeM :: Bool, addressM :: Word16} 
+
+-- | implement a function specification of the cpu
 cpu :: CPUIn -> CPUOut
 cpu CPUIn{memIn=memIn, instruction=instruction, reset=reset} = error "To be implemented"
+
+
+alu :: () -> ()
+alu _ = error "to be implemented"
+
+
+-- | Stateful components
+
+
+

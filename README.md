@@ -109,6 +109,9 @@ http://icebreaker-fpga.com/
 TinyFPGA
 https://tinyfpga.com/
 
+Awesome HDL list
+https://github.com/drom/awesome-hdl
+
 
 
 
