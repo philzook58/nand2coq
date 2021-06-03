@@ -67,6 +67,8 @@ https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.39.9165&rep=rep1&type=
 RISC-V formal specs: 3 Haskell, 1 SAIL, 1 Kami
 https://mail.haskell.org/pipermail/haskell-cafe/2019-May/131067.html
 
+https://github.com/stonebuddha/eopl
+
 ------
 
 It would be super cool to actually run this on an FPGA. The open source FPGA world is blowing up
