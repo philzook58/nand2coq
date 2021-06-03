@@ -69,6 +69,12 @@ https://mail.haskell.org/pipermail/haskell-cafe/2019-May/131067.html
 
 https://github.com/stonebuddha/eopl
 
+https://project-oak.github.io/silveroak/demo/tutorial.html 
+
+https://github.com/conal/agda-hardware
+
+Pi-Ware Agda https://drops.dagstuhl.de/opus/volltexte/2018/8479/pdf/LIPIcs-TYPES-2015-9.pdf
+
 ------
 
 It would be super cool to actually run this on an FPGA. The open source FPGA world is blowing up
