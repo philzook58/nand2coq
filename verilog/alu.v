@@ -22,7 +22,7 @@ assign zerox = zx ? 0 : x;
 assign notx = nx ? ~zerox : zerox;
 assign zeroy = zy ? 0 : y;
 assign noty = ny ? ~zeroy : zeroy;
-assign andplus = f ? x + y : x & y;
+assign andplus = f ? (notx + noty) : (notx & noty);
 assign out = no ? ~andplus : andplus; 
 
 assign zr = out == 0;

@@ -1,4 +1,4 @@
-module Computer(reset, clk);
+module Computer(reset, clk, program);
  input reset;
  input clk;
 
@@ -22,25 +22,10 @@ wire writeM;
 wire [0:15] PC;
 
 ROM32K rom(.address (PC), .out (instruction));
+
 Memory memory(.in (outM),
        .load (writeM),
        .address (addressM),
        .out (inM),
        .clk (clk) );
-
-/*
-module Memory(in, load, address, out, clk );
-*/
-
-/*
- module CPU(instruction, 
-	inM,
-	 outM,
-	  writeM,
-	   PC,
-	    addressM ,
-	     reset,
-	      clk);
-8?
-
 endmodule

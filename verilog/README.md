@@ -1,6 +1,42 @@
 # Verilog Implementation
 
 
+
+I have made 2 versions. 
+1. A Computer that is defined in `Computer2.v` in which every module is inlined and I take a more programmatic style.
+2. A Sequence of modules that feels more like the nand2tetris presentation.
+
+It may be nice to verify their equivalence. This verification does not lend all that much assurance to the total correctness of the implementation however.
+
+You may compile a assembly program `myprog.asm`
+```python
+python assembly.py myprog
+```
+
+And then set the variable at the top of `Computer2.v` to `myprog.hack` (yes this is super janky)
+
+And run the computer via:
+```
+iverilog Computer_tb.v Computer2.v
+./a.out
+```
+
+
+ideas:
+- Make a linker
+- Make a dsl to compile to verilog
+- Verify equivalence of different implementations
+- Get running on Icestick
+- Quickcheck or Brute force test using verilator. Equivalence to hack interpreter
+
+<https://github.com/jopdorp/nand2tetris-verilog> Another implementation of nand2tetris cpu in verilog.
+<https://gitlab.com/x653/nand2tetris-fpga/> another implementation of nand2teris in verilog
+
+
+### Older notes
+
+
+
 Fair warning: I believe where I left this off, the computer is not remotely near correct. In particular I still need to implement a fetch-execute clock division at least.
 
 
