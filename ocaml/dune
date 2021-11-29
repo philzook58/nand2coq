@@ -1,0 +1,4 @@
+(library 
+ (name hack)
+  (libraries core_kernel)
+  (preprocess (pps ppx_import ppx_jane)))
