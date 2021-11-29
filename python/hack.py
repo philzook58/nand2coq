@@ -329,6 +329,7 @@ st = HackState(A,D,PC,RAM)
 z3_comp_table = comp_table(st)
 
 Insn = Function("Insn", BV16, BV16, BV16, ArraySort(AddrSort, BV16), BoolSort())
+
 def z3_insn(insn):
     ''' Returns the transition relation corresponding to the given instruction'''
     if type(insn) == AInsn:
