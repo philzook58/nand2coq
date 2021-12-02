@@ -5,6 +5,8 @@ All combinations of registers are possible.
 *)
 Require Import Bvector.
 
+(* Module Dest or Section *)
+
 Inductive dest : Type :=
 | iNull | iM | iD | iMD | iA | iAM | iAD | iAMD.
 
