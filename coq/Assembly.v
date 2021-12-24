@@ -4,13 +4,12 @@ All combinations of registers are possible.
 *)
 
 Module Comp.
-Variant t := ZERO | ONE | NEGONE | D | A | M | 
-NOTD | NOTA | NOTM | NEGD | NEGA | NEGM | INCD |
-INCA | INCM | DECD | DECA | DECM |
-                         ADD_DA | ADD_DM 
-                         | SUB_DA | SUB_DM |
-                         SUB_AD | SUB_MD | AND_DA
-                         | AND_DM | OR_DA | OR_DM.
+Variant t := 
+  | ZERO | ONE | NEGONE | D | A | M
+  | NOTD | NOTA | NOTM | NEGD | NEGA | NEGM | INCD
+  | INCA | INCM | DECD | DECA | DECM | ADD_DA | ADD_DM
+  | SUB_DA | SUB_DM | SUB_AD | SUB_MD | AND_DA
+  | AND_DM | OR_DA | OR_DM.
 End Comp.
 
 Module Dest.
@@ -20,6 +19,168 @@ End Dest.
 Module Jump.
 Variant t := NULL | JGT | JEQ | JGE | JLT | JNE | JLE | JMP.
 End Jump.
+
+Require Import Bvector.
+Require Import ZArith.
+Open Scope Z_scope.
+(*
+https://github.com/jasmin-lang/coqword
+
+https://compcert.org/doc/html/compcert.lib.Integers.html
+Compcert deagfling with integers
+Huh. The ocmpairson type is pretty simuilkar to jump
+*)
+Definition bv16 := Z. (* Bvector 16*)
+Variant insn :=
+  | AInsn : bv16 -> insn
+  | CInsn : Dest.t -> Comp.t -> Jump.t -> insn.
+
+Record HackState := {
+    Areg : bv16;
+    Dreg : bv16;
+    PC : bv16;
+    mem : bv16 -> bv16
+}.
+
+Import Comp.
+Definition comp (c : Comp.t) (s : HackState) : bv16 :=
+  let d := s.(Dreg) in
+  let a := s.(Areg) in
+  let m := s.(mem) s.(Areg) in
+  match c with
+  | ZERO => 0
+  | ONE => 1
+  | NEGONE => -1
+  | D => d
+  | A => a
+  | M => m
+
+  | NEGD => -d
+  | NEGA => -a
+  | NEGM => -m
+  | INCD => 1 + d
+  | INCA => 1 + a 
+  | INCM => 1 + m 
+  | DECD => d - 1
+  | DECA => a -1 
+  | DECM => m - 1
+  | ADD_DA => d + a
+  | ADD_DM => d + m
+  | SUB_DA => d + a
+  | SUB_DM => d - m
+  | SUB_AD => a - d
+  | SUB_MD => m - d
+  | AND_DA => Z.land d a (* hmmmm. Suspicious *)
+  | AND_DM => Z.land d m
+  | OR_DA => Z.lor d a
+  | OR_DM => Z.lor d m
+  (* Negating a two's complement number is simple: Invert all the bits and add one to the result *)
+  | NOTD => -d - 1
+  | NOTA => -a - 1
+  | NOTM => -m - 1
+  end .
+
+Import Dest.
+Import Jump.
+Print Scope Z_scope.
+Definition step (i : insn) (s : HackState) : HackState :=
+  match i with
+  | AInsn addr => {| 
+                    Areg := addr;
+                    Dreg := s.(Dreg);
+                    PC := s.(PC) + 1;
+                    mem := s.(mem);
+                  |} 
+  | CInsn dest c j => 
+    let res := comp c s in
+    let a' := match dest with
+          | A | AM | AD | AMD => res
+          | Dest.NULL | M | D | MD => s.(Areg)
+    end in
+    let d' := match dest with
+    | D | MD | AD | AMD => res
+    | A | AM | Dest.NULL | M => s.(Dreg)
+    end in
+    let mem' := match dest with
+        | AM | MD | M  | AMD => fun x => if x =? s.(Areg) then res else s.(mem) x
+        | A | AD |  Dest.NULL | D => s.(mem)
+    end in
+    (* Use decide? *)
+    let do_jump := match j with
+    | NULL => false
+    | JGT => res >? 0
+    | JEQ => res =? 0
+    | JGE => res >=? 0
+    | JLT => res <? 0
+    | JNE => negb (res =? 0)
+    | JLE => res <=? 0
+    | JMP => true
+    end in
+    let pc' := if do_jump then s.(Areg) else 1 + s.(PC) in
+    {|
+      Areg := a';
+      Dreg := d';
+      PC := pc';
+      mem := mem'
+    |}
+  end.
+
+
+Definition init_state : HackState :=
+  {|
+  Areg := 0;
+  Dreg := 0;
+  PC := 0;
+  mem := fun x => 0
+  |}.
+
+Definition prog1 pc :=
+  match pc with
+  | 0 => AInsn 1 
+  | _ => CInsn Dest.D Comp.INCD JMP
+  end.
+Print nat.
+
+Fixpoint nsteps n (rom : bv16 -> insn) (s : HackState) : HackState :=
+  match n with
+  | O => s
+  | S n' => let insn := rom s.(PC) in
+            nsteps n' rom (step insn s) 
+  end.
+
+Compute nsteps 5%nat prog1 init_state.
+
+
+Module StackMachine.
+(* https://people.csail.mit.edu/cpitcla/thesis/relational-compilation.html *)
+Variant insn :=
+  | Push : Z -> insn
+  | Pop : insn
+  | Add : insn
+.
+Inductive expr := 
+  | Lit : Z -> expr
+  | EAdd : expr -> expr -> expr
+  .
+
+Fixpoint eval_expr e := match e with
+  | Lit x => x
+  | EAdd x y => (eval_expr x) + (eval_expr y)
+end.
+
+Definition step insn stack :=
+  match insn with
+  | Push x => Some (x :: stack)
+  | Pop => match stack with [] => None | x :: xs => xs end 
+  | Add => match stack with 
+            | x :: y :: xs => Some (x + y) :: xs
+            | _ => None
+  end
+  end.
+
+
+End StackMachine.
+
 
 
 Check bool.
@@ -74,16 +235,7 @@ Theorem lift (forall x y, f x y =  ) ->
 
 
 
-Variant insn := 
-  | A : bv16 -> insn
-  | C : Dest.t -> Comp.t -> Jump.t -> insn.
 
-Record HackState := {
-    A : bv16;
-    D : bv16;
-    PC : bv16;
-    mem : bv16 -> bv16
-}.
 
 Require Extraction.
 
